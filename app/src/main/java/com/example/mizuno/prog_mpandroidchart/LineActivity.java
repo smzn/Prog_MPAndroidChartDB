@@ -13,32 +13,31 @@ import java.util.ArrayList;
 
 public class LineActivity extends AppCompatActivity {
 
+    LineChart lineChart;
+    private AsyncTaskGetJson getjson;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line);
 
-        LineChart lineChart = (LineChart) findViewById(R.id.lchart);
+        lineChart = (LineChart) findViewById(R.id.lchart);
 
+        //getjson = new AsyncTaskGetJson(this,android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID));
+        getjson = new AsyncTaskGetJson(this,"4fa0c24105b89691");
+        getjson.execute();
 
+    }
+
+    public void setLineChart(String[] str) {
         ArrayList<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(4f, 0));
-        entries.add(new Entry(8f, 1));
-        entries.add(new Entry(6f, 2));
-        entries.add(new Entry(2f, 3));
-        entries.add(new Entry(18f, 4));
-        entries.add(new Entry(9f, 5));
-
-        LineDataSet dataset = new LineDataSet(entries, "# of Calls");
-
         ArrayList<String> labels = new ArrayList<String>();
-        labels.add("January");
-        labels.add("February");
-        labels.add("March");
-        labels.add("April");
-        labels.add("May");
-        labels.add("June");
-
+        int index = 0;
+        for(int i = 0; i< str.length; i+=6 ){
+            entries.add(new Entry(Integer.parseInt(str[i+5]), index++));
+            labels.add(str[i]);
+        }
+        LineDataSet dataset = new LineDataSet(entries, "# of Calls");
         LineData data = new LineData(labels, dataset);
         dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
         dataset.setDrawCubic(true);
@@ -46,5 +45,6 @@ public class LineActivity extends AppCompatActivity {
 
         lineChart.setData(data);
         lineChart.animateY(5000);
+
     }
 }
